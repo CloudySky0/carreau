@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "485626860441",
+    "project_id": "diamond-app-197ff",
+    "storage_bucket": "diamond-app-197ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485626860441:android:341e979b88eefbedcd7908",
+        "android_client_info": {
+          "package_name": "com.example.carreau"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKo4peZK0ouvU28YxdAvGPnCO_ukwB2Us"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
