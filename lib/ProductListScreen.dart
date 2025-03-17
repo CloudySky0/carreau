@@ -30,15 +30,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
       "price": "Rs 13,50,000",
       "old_price": "Rs 14,70,380",
       "discount": "9% off",
-      "rating": "4.7 (4443)"
+      "rating": "4.7 (4443)",
+      "delivery":"Standard Delivery"
     },
     {
       "name": "Chaumet Platinum Engagement Rings",
-      "image": "assets/images/earings.jpg",
-      "price": "Rs 10,80,000",
-      "old_price": "Rs 11,87,948",
+      "imageURL": "", //copy image, convert image to URL, paste as string
+      "price": "Rs 10,80,000", //number
+      "old_price": "Rs 11,87,948", //number
       "discount": "6% off",
-      "rating": "4.5 (2091)"
+      "rating": "4.5 (2091)",
+      "category": "", //["Necklace", "Ring", "Earring","Pendant","Bracelet","Bangle","Anklet","Brooch","Watch"].map((category)
+      "delivery":"Fast Delivery" //["Fast Delivery", "Standard Delivery"]
     },
   ];
 

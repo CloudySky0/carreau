@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-
+import 'accountPage.dart';
+import 'appPreferences.dart';
+import 'paymentMethods.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -35,16 +36,16 @@ class ProfileScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildQuickButton("Orders"),
-                _buildQuickButton("Notifications"),
+                _buildQuickButton(context,"Orders"),
+                _buildQuickButton(context, "Notifications"),
               ],
             ),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildQuickButton("Account"),
-                _buildQuickButton("Support & Help"),
+                _buildQuickButton(context,"Account"),
+                _buildQuickButton(context,"Support & Help"),
               ],
             ),
 
@@ -61,48 +62,44 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(height: 20),
 
             // Settings List
-            _buildSettingsItem("Account"),
-            _buildSettingsItem("App Preferences"),
-            _buildSettingsItem("Orders & Payments"),
-            _buildSettingsItem("Support & Help"),
-            _buildSettingsItem("Legal & About"),
-            _buildSettingsItem("Linked Accounts"),
-            _buildSettingsItem("Logout"),
+            _buildSettingsItem(context, "Account"),
+            _buildSettingsItem(context, "App Preferences"),
+            _buildSettingsItem(context, "Orders & Payments"),
+            _buildSettingsItem(context, "Support & Help"),
+            _buildSettingsItem(context, "Legal & About"),
+            _buildSettingsItem(context, "Linked Accounts"),
+            _buildSettingsItem(context, "Logout"),
           ],
         ),
       ),
 
-      // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white54,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outline), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
-      ),
+
     );
   }
 
   // Quick Action Button Widget
-  Widget _buildQuickButton(String title) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-          ),
-          onPressed: () {},
-          child: Text(title, textAlign: TextAlign.center),
+Widget _buildQuickButton(BuildContext context, String title) {
+  return Expanded(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
         ),
+        onPressed: () {
+          if (title == "Account") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AccountScreen()),
+            );
+          }
+        },
+        child: Text(title, textAlign: TextAlign.center),
       ),
-    );
-  }
+    ),
+  );
+}
 
   // Order Placeholder Widget
   Widget _buildOrderPlaceholder() {
@@ -117,13 +114,26 @@ class ProfileScreen extends StatelessWidget {
   }
 
   // Settings List Item Widget
-  Widget _buildSettingsItem(String title) {
+  Widget _buildSettingsItem(BuildContext context, String title) {
     return Column(
       children: [
         ListTile(
           title: Text(title, style: TextStyle(fontSize: 16)),
           tileColor: Colors.white10,
-          onTap: () {},
+          onTap: () {
+            if (title == "Account") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AccountScreen()),
+            );
+            }
+            if (title == "App Preferences") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AppPreferencesScreen()),
+            );
+          }
+          },
         ),
         Divider(height: 1, color: Colors.grey[800]),
       ],
