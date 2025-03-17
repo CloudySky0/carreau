@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'ProductListScreen.dart';
 class ProductPage extends StatelessWidget {
+  TextEditingController searchController = TextEditingController();
+  
   final List<Map<String, String>> categories = [
     {"name": "Necklaces", "image": "assets/images/necklace.jpg"},
     {"name": "Rings", "image": "assets/images/necklace.jpg"},
@@ -20,6 +23,7 @@ class ProductPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: TextField(
+          controller: searchController,
           decoration: InputDecoration(
             hintText: "Search or ask a question",
             hintStyle: TextStyle(color: Colors.white54),
@@ -27,6 +31,16 @@ class ProductPage extends StatelessWidget {
             prefixIcon: Icon(Icons.search, color: Colors.white),
           ),
           style: TextStyle(color: Colors.white),
+          onSubmitted: (query){
+            if (query.isNotEmpty) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductListScreen(searchQuery: query, selectedCategory: ["Necklace"],),
+          ),
+        );
+      }
+          },
         ),
       ),
       backgroundColor: Colors.black,
