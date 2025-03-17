@@ -133,6 +133,12 @@ Widget _buildQuickButton(BuildContext context, String title) {
               MaterialPageRoute(builder: (context) => AppPreferencesScreen()),
             );
           }
+          if (title == "Orders & Payments") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SavedPaymentMethodsScreen()),
+            );
+          }
           },
         ),
         Divider(height: 1, color: Colors.grey[800]),
