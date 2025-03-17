@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'ProductListScreen.dart';
@@ -41,6 +42,7 @@ SizedBox(
           context,
           MaterialPageRoute(
             builder: (context) => ProductListScreen(searchQuery: query, selectedCategory: ["Necklace"],),
+            // builder: (context) => ProductListScreen(),
           ),
         );
       }
@@ -122,7 +124,7 @@ SizedBox(
                         ]),
                   ),
                   SizedBox(
-                    height: 210,
+                    height: 225,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('products')
@@ -167,7 +169,7 @@ SizedBox(
                             color: Colors.white)),
                   ),
                   SizedBox(
-                    height: 210,
+                    height: 225,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('products')
@@ -287,9 +289,12 @@ Widget _buildBrandCard(String imageUrl, String brandName) {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
+          child: AutoSizeText(
             brandName,
             style: TextStyle(color: Colors.white),
+            maxLines: 2, 
+            minFontSize: 12, 
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],

@@ -136,7 +136,7 @@ class FavoriteButton extends StatefulWidget {
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = false; // Track selection state
+  bool isFavorite = true; // Track selection state
 
   @override
   Widget build(BuildContext context) {
