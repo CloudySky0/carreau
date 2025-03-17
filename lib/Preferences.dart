@@ -140,7 +140,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   Widget _buildButton(String text, Color color) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Template()),);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Template()),);
                 print("Button Pressed!");
       },
       style: ElevatedButton.styleFrom(

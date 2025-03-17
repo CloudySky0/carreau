@@ -2,7 +2,8 @@ import 'package:diamond_app/wishlist.dart';
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'productPage.dart';
-
+import 'ShoppingCartPage.dart';
+import 'ProfileScreen.dart';
 // void main() {
 //   runApp(MyApp());
 // }
@@ -31,10 +32,11 @@ class Template extends StatelessWidget {
     HomePage(),
     Wishlist(),
     ProductPage(),
+    ShoppingCartPage(),
     // FavoritesScreen(),
     // ListScreen(),
     // CartScreen(),
-    // ProfileScreen(),
+    ProfileScreen(),
   ];
  @override
 Widget build(BuildContext context) {

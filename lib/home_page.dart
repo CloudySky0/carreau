@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'ProductListScreen.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
+  HomePage({super.key});
+  TextEditingController searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,17 +12,18 @@ class HomePage extends StatelessWidget {
             color: Colors.black,
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment:CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Column( 
-                      children: [
-                        SizedBox(
+                    child: Column(children: [
+
+SizedBox(
   width: 400, // Set width
   height: 50, // Set height
   child: TextField(
-    style: TextStyle(color: Colors.white),
+    controller: searchController,
+    style: TextStyle(color: Colors.black),
     decoration: InputDecoration(
       hintText: 'Search...',
       hintStyle: TextStyle(color: Colors.black),
@@ -33,24 +35,33 @@ class HomePage extends StatelessWidget {
       ),
       prefixIcon: Icon(Icons.search, color: Colors.black),
     ),
+    onSubmitted: (query) {
+      if (query.isNotEmpty) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductListScreen(searchQuery: query, selectedCategory: ["Necklace"],),
+          ),
+        );
+      }
+    },
   ),
 ),
-Padding(padding: EdgeInsets.all(5.0), ),
-                        Center(
-                      
-                      child: 
-                        Text('Hello, Name\n Discover Hot Topics',
-                            style:
-                                TextStyle(fontSize: 20, color: Colors.white),
-                                  textAlign: TextAlign.center
-                                ),
+
+                      Padding(
+                        padding: EdgeInsets.all(5.0),
+                      ),
+                      Center(
+                        child: Text('Hello, Name\n Discover Hot Topics',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            textAlign: TextAlign.center),
                         // Text('',
                         //     style:
                         //         TextStyle(fontSize: 16, color: Colors.white),
                         //           textAlign: TextAlign.center
                         //         ),
-                      
-                    )]),
+                      )
+                    ]),
                   ),
                   SizedBox(
                     height: 270,
@@ -100,14 +111,16 @@ Padding(padding: EdgeInsets.all(5.0), ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child:Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text('Our Top Brands',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white)),]
-                  ),),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Our Top Brands',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                        ]),
+                  ),
                   SizedBox(
                     height: 210,
                     child: StreamBuilder<QuerySnapshot>(
@@ -124,7 +137,6 @@ Padding(padding: EdgeInsets.all(5.0), ),
 
                         var products = snapshot.data!.docs;
 
-                      
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: products.length,
@@ -133,13 +145,14 @@ Padding(padding: EdgeInsets.all(5.0), ),
                                 products[index].data() as Map<String, dynamic>?;
 
                             // Handle null values safely
-                            String imageURL = product?['imageURL']?? 'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
+                            String imageURL = product?['imageURL'] ??
+                                'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
                             String productName =
                                 product?['name'] ?? 'Unnamed Product';
                             double price =
                                 (product?['price'] as num?)?.toDouble() ?? 0.0;
 
-                            return _buildBrandCard(imageURL,productName );
+                            return _buildBrandCard(imageURL, productName);
                           },
                         );
                       },
@@ -169,7 +182,6 @@ Padding(padding: EdgeInsets.all(5.0), ),
 
                         var products = snapshot.data!.docs;
 
-                      
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: products.length,
@@ -178,13 +190,14 @@ Padding(padding: EdgeInsets.all(5.0), ),
                                 products[index].data() as Map<String, dynamic>?;
 
                             // Handle null values safely
-                            String imageURL = product?['imageURL']?? 'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
+                            String imageURL = product?['imageURL'] ??
+                                'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
                             String productName =
                                 product?['name'] ?? 'Unnamed Product';
                             double price =
                                 (product?['price'] as num?)?.toDouble() ?? 0.0;
 
-                            return _buildBrandCard(imageURL,productName );
+                            return _buildBrandCard(imageURL, productName);
                           },
                         );
                       },
@@ -214,7 +227,6 @@ Padding(padding: EdgeInsets.all(5.0), ),
 
                         var products = snapshot.data!.docs;
 
-                      
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: products.length,
@@ -223,13 +235,14 @@ Padding(padding: EdgeInsets.all(5.0), ),
                                 products[index].data() as Map<String, dynamic>?;
 
                             // Handle null values safely
-                            String imageURL = product?['imageURL']?? 'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
+                            String imageURL = product?['imageURL'] ??
+                                'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
                             String productName =
                                 product?['name'] ?? 'Unnamed Product';
                             double price =
                                 (product?['price'] as num?)?.toDouble() ?? 0.0;
 
-                            return _buildFeatureCard(imageURL,productName );
+                            return _buildFeatureCard(imageURL, productName);
                           },
                         );
                       },
@@ -250,12 +263,14 @@ Widget _buildBrandCard(String imageUrl, String brandName) {
       borderRadius: BorderRadius.circular(10),
     ),
     child: Column(
-      mainAxisSize: MainAxisSize.min, // Ensures the column takes only required space
+      mainAxisSize:
+          MainAxisSize.min, // Ensures the column takes only required space
       children: [
         SizedBox(
           height: 150, // Set a fixed height for images
           child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10), bottom:Radius.circular(10) ),
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(10), bottom: Radius.circular(10)),
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
@@ -281,7 +296,6 @@ Widget _buildBrandCard(String imageUrl, String brandName) {
     ),
   );
 }
-
 
 Widget _buildFeatureCard(String imageUrl, String brandName) {
   return Container(
@@ -292,12 +306,14 @@ Widget _buildFeatureCard(String imageUrl, String brandName) {
       borderRadius: BorderRadius.circular(10),
     ),
     child: Column(
-      mainAxisSize: MainAxisSize.min, // Ensures the column takes only required space
+      mainAxisSize:
+          MainAxisSize.min, // Ensures the column takes only required space
       children: [
         SizedBox(
           height: 200, // Set a fixed height for images
           child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10), bottom:Radius.circular(10) ),
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(10), bottom: Radius.circular(10)),
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
@@ -323,4 +339,3 @@ Widget _buildFeatureCard(String imageUrl, String brandName) {
     ),
   );
 }
-

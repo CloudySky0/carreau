@@ -1,132 +1,113 @@
 import 'package:flutter/material.dart';
-
-
+import 'ProductListScreen.dart';
 class ProductPage extends StatelessWidget {
-  final List<Map<String, String>> products = [
-    {
-      "image": "assets/images/earings.jpg",
-      "title": "Tiffany & Co. Platinum Wedding Diamond Rings",
-      "oldPrice": "Rs 24,999",
-      "newPrice": "Rs 22,999",
-      "discount": "10% off",
-      "rating": "4.8 (2048)"
-    },
-    {
-      "image": "assets/images/earings.jpg",
-      "title": "Carter Destinee Solitaire Ring 1895",
-      "oldPrice": "Rs 14,79,000",
-      "newPrice": "Rs 13,50,000",
-      "discount": "9% off",
-      "rating": "4.9 (648)"
-    },
-    {
-      "image": "assets/images/earings.jpg",
-      "title": "Chaumet Platinum Engagement Rings",
-      "oldPrice": "Rs 18,57,346",
-      "newPrice": "Rs 10,80,000",
-      "discount": "6% off",
-      "rating": "4.8 (1098)"
-    },
-    {
-      "image": "assets/images/earings.jpg",
-      "title": "Classic Dior Gold 5 Carat Rings",
-      "oldPrice": "Rs 0",
-      "newPrice": "Rs 0",
-      "discount": "",
-      "rating": "4.7 (825)"
-    }
+  final List<Map<String, String>> categories = [
+    {"name": "Necklaces", "image": "assets/images/necklace.jpg"},
+    {"name": "Rings", "image": "assets/images/necklace.jpg"},
+    {"name": "Earrings", "image": "assets/images/necklace.jpg"},
+    {"name": "Pendants", "image": "assets/images/necklace.jpg"},
+    {"name": "Bracelets", "image": "assets/images/necklace.jpg"},
+    {"name": "Bangles", "image": "assets/images/necklace.jpg"},
+    {"name": "Anklets", "image": "assets/images/necklace.jpg"},
+    {"name": "Brooches & Pins", "image": "assets/images/necklace.jpg"},
+    {"name": "Watches", "image": "assets/images/necklace.jpg"},
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: TextField(
           decoration: InputDecoration(
             hintText: "Search or ask a question",
-            prefixIcon: Icon(Icons.search, color: Colors.white),
             hintStyle: TextStyle(color: Colors.white54),
-            filled: true,
-            fillColor: Colors.black,
             border: InputBorder.none,
+            prefixIcon: Icon(Icons.search, color: Colors.white),
           ),
           style: TextStyle(color: Colors.white),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.sort, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
       ),
       backgroundColor: Colors.black,
-      body: ListView.builder(
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          final product = products[index];
-          return Card(
-            color: Colors.black,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(product["image"]!),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product["title"]!,
-                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Text(
-                            product["oldPrice"]!,
-                            style: TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            product["newPrice"]!,
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            product["discount"]!,
-                            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.yellow, size: 16),
-                          SizedBox(width: 4),
-                          Text(
-                            product["rating"]!,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.white),
-                        onPressed: () {},
-                        child: Text("Add to cart"),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Shop By Category",
+              style: TextStyle(
+                  fontSize: 22,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
-          );
-        },
+            SizedBox(height: 10),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  return CategoryCard(
+                    image: categories[index]["image"]!,
+                    label: categories[index]["name"]!,
+                    onTap: () {
+                      // Handle navigation or action
+                       Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductListScreen(searchQuery: "", selectedCategory: [categories[index]["name"]],),
+          ),
+        );
+                      // print("Tapped on ${categories[index]["name"]}");
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryCard extends StatelessWidget {
+  final String image;
+  final String label;
+  final VoidCallback onTap; // Function to handle button press
+
+  CategoryCard({required this.image, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap, // Call the function when tapped
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: AssetImage(image),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            label,
+            style: TextStyle(color: Colors.white, fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
