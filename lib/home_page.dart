@@ -1,13 +1,31 @@
+import 'dart:io';
+import 'package:provider/provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'user_provider.dart';
 import 'ProductListScreen.dart';
+import 'productDetailPage.dart';
+import 'Database.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   TextEditingController searchController = TextEditingController();
+
+
+Future<List<Product>> fetchProducts() async {
+  
+  List<Product> products;
+  products = await Product.fetchProductsFromFirebase();
+  print("products:");
+  print(products);
+  return products;
+}
+ 
   @override
   Widget build(BuildContext context) {
+    var userData = Provider.of<UserProvider>(context).userData;
+    
     return Scaffold(
         body: Container(
             color: Colors.black,
@@ -54,7 +72,7 @@ SizedBox(
                         padding: EdgeInsets.all(5.0),
                       ),
                       Center(
-                        child: Text('Hello, Name\n Discover Hot Topics',
+                        child: Text('Hello, ${userData?['profile']['name']}\n Discover Hot Topics',
                             style: TextStyle(fontSize: 20, color: Colors.white),
                             textAlign: TextAlign.center),
                         // Text('',
@@ -126,39 +144,33 @@ SizedBox(
                   SizedBox(
                     height: 225,
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('products')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text("Error: ${snapshot.error}");
-                        }
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return Text("No products found");
-                        }
+  stream: FirebaseFirestore.instance.collection('products').snapshots(),
+  builder: (context, snapshot) {
+    if (snapshot.hasError) {
+      return Text("Error: ${snapshot.error}");
+    }
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Text("No products found");
+    }
 
-                        var products = snapshot.data!.docs;
+    // ✅ Convert snapshot data to Product list using fetchProductsFromFirebase
+    List<Product> products = snapshot.data!.docs.map(
+      (doc) => Product.fromMap(doc.data() as Map<String, dynamic>),
+    ).toList();
 
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            var product =
-                                products[index].data() as Map<String, dynamic>?;
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        Product product = products[index];
 
-                            // Handle null values safely
-                            String imageURL = product?['imageURL'] ??
-                                'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
-                            String productName =
-                                product?['name'] ?? 'Unnamed Product';
-                            double price =
-                                (product?['price'] as num?)?.toDouble() ?? 0.0;
+        // ✅ No need to check null values, handled in fromMap()
+        return _buildBrandCard(context, product);
+      },
+    );
+  },
+),
 
-                            return _buildBrandCard(imageURL, productName);
-                          },
-                        );
-                      },
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -171,39 +183,33 @@ SizedBox(
                   SizedBox(
                     height: 225,
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('products')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text("Error: ${snapshot.error}");
-                        }
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return Text("No products found");
-                        }
+  stream: FirebaseFirestore.instance.collection('products').snapshots(),
+  builder: (context, snapshot) {
+    if (snapshot.hasError) {
+      return Text("Error: ${snapshot.error}");
+    }
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Text("No products found");
+    }
 
-                        var products = snapshot.data!.docs;
+    // ✅ Convert snapshot data to Product list using fetchProductsFromFirebase
+    List<Product> products = snapshot.data!.docs.map(
+      (doc) => Product.fromMap(doc.data() as Map<String, dynamic>),
+    ).toList();
 
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            var product =
-                                products[index].data() as Map<String, dynamic>?;
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        Product product = products[index];
 
-                            // Handle null values safely
-                            String imageURL = product?['imageURL'] ??
-                                'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
-                            String productName =
-                                product?['name'] ?? 'Unnamed Product';
-                            double price =
-                                (product?['price'] as num?)?.toDouble() ?? 0.0;
+        // ✅ No need to check null values, handled in fromMap()
+        return _buildBrandCard(context, product);
+      },
+    );
+  },
+),
 
-                            return _buildBrandCard(imageURL, productName);
-                          },
-                        );
-                      },
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -216,39 +222,33 @@ SizedBox(
                   SizedBox(
                     height: 260,
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('featured')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text("Error: ${snapshot.error}");
-                        }
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return Text("No products found");
-                        }
+  stream: FirebaseFirestore.instance.collection('products').snapshots(),
+  builder: (context, snapshot) {
+    if (snapshot.hasError) {
+      return Text("Error: ${snapshot.error}");
+    }
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Text("No products found");
+    }
 
-                        var products = snapshot.data!.docs;
+    // ✅ Convert snapshot data to Product list using fetchProductsFromFirebase
+    List<Product> products = snapshot.data!.docs.map(
+      (doc) => Product.fromMap(doc.data() as Map<String, dynamic>),
+    ).toList();
 
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            var product =
-                                products[index].data() as Map<String, dynamic>?;
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        Product product = products[index];
 
-                            // Handle null values safely
-                            String imageURL = product?['imageURL'] ??
-                                'https://i.pinimg.com/736x/35/93/d6/3593d6b438457ec0e895b790e0879dc7.jpg';
-                            String productName =
-                                product?['name'] ?? 'Unnamed Product';
-                            double price =
-                                (product?['price'] as num?)?.toDouble() ?? 0.0;
+        // ✅ No need to check null values, handled in fromMap()
+        return _buildBrandCard(context, product);
+      },
+    );
+  },
+),
 
-                            return _buildFeatureCard(imageURL, productName);
-                          },
-                        );
-                      },
-                    ),
                   ),
                 ],
               ),
@@ -256,8 +256,15 @@ SizedBox(
   }
 }
 
-Widget _buildBrandCard(String imageUrl, String brandName) {
-  return Container(
+Widget _buildBrandCard(BuildContext context,Product product) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProductDetailPage(product: product,)),
+      );
+    },
+    child :Container(
     width: 150,
     margin: EdgeInsets.all(8.0),
     decoration: BoxDecoration(
@@ -274,7 +281,7 @@ Widget _buildBrandCard(String imageUrl, String brandName) {
             borderRadius: BorderRadius.vertical(
                 top: Radius.circular(10), bottom: Radius.circular(10)),
             child: Image.network(
-              imageUrl,
+              product.image,
               fit: BoxFit.cover,
               width: double.infinity,
               loadingBuilder: (context, child, loadingProgress) {
@@ -290,7 +297,7 @@ Widget _buildBrandCard(String imageUrl, String brandName) {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: AutoSizeText(
-            brandName,
+            product.name,
             style: TextStyle(color: Colors.white),
             maxLines: 2, 
             minFontSize: 12, 
@@ -299,7 +306,7 @@ Widget _buildBrandCard(String imageUrl, String brandName) {
         ),
       ],
     ),
-  );
+  ),);
 }
 
 Widget _buildFeatureCard(String imageUrl, String brandName) {

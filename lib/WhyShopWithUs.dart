@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'Preferences.dart';
 
 class WhyShopWithUsScreen extends StatelessWidget {
-  const WhyShopWithUsScreen({super.key});
+  final String? userid;
+  const WhyShopWithUsScreen({super.key,required this.userid});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class WhyShopWithUsScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PreferencesScreen()),
+                        MaterialPageRoute(builder: (context) => PreferencesScreen(userId: userid,)),
                       );
                     },
                     style: ElevatedButton.styleFrom(

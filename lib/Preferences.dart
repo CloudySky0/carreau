@@ -1,8 +1,10 @@
 import 'package:diamond_app/template.dart';
 import 'package:flutter/material.dart';
+import 'login.dart';
 
 class PreferencesScreen extends StatefulWidget {
-  const PreferencesScreen({super.key});
+  final String? userId;
+  const PreferencesScreen({super.key, required this.userId});
 
   @override
   _PreferencesScreenState createState() => _PreferencesScreenState();
@@ -140,7 +142,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   Widget _buildButton(String text, Color color) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Template()),);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Template(userId: widget.userId,)),);
                 print("Button Pressed!");
       },
       style: ElevatedButton.styleFrom(

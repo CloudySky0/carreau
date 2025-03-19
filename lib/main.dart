@@ -1,29 +1,45 @@
 import 'package:diamond_app/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'user_service.dart';
+import 'user_provider.dart';
 import 'changingBackground.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'template.dart';
+import 'login.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
-  runApp(JewelryMarketApp());
+  
+  String? userId = await UserService.getUserId();
+
+  runApp(JewelryMarketApp(userId: userId,));
 }
 
 class JewelryMarketApp extends StatelessWidget {
-  const JewelryMarketApp({super.key});
-
+  const JewelryMarketApp({super.key,required this.userId});
+  final String? userId;
+  
+  // JewelryMarketApp({required this.userId});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.amber,
         fontFamily: 'Poppins',
       ),
-      home: ChangingBackgroundScreen(),
+      home: ChangingBackgroundScreen(userId: userId),
+      )
     );
   }
 }
@@ -50,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     });
   }

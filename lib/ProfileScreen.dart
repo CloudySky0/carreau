@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'accountPage.dart';
 import 'appPreferences.dart';
 import 'paymentMethods.dart';
+import 'supportHelpScreen.dart';
+import 'user_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var userData = Provider.of<UserProvider>(context).userData;
+
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey[400],
-        title: Text('Profile', style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
-        ),
-      ),
+      backgroundColor: Colors.black,
+      // appBar: AppBar(
+      //   backgroundColor: Colors.grey[400],
+      //   title: Text('Profile', style: TextStyle(color: Colors.black)),
+      //   leading: IconButton(
+      //     icon: Icon(Icons.arrow_back, color: Colors.black),
+      //     onPressed: () {},
+      //   ),
+      // ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(12),
         child: Column(
@@ -25,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Icon(Icons.account_circle, size: 40, color: Colors.white),
                 SizedBox(width: 10),
-                Text("Hello Name", style: TextStyle(fontSize: 18)),
+                Text("Hello ${userData?['profile']['name']}", style: TextStyle(fontSize: 18, color: Colors.white)),
                 Icon(Icons.arrow_drop_down, color: Colors.white),
               ],
             ),
@@ -52,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(height: 20),
 
             // Orders Section
-            Text("Orders", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text("Orders", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,14 +91,20 @@ Widget _buildQuickButton(BuildContext context, String title) {
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: Colors.white24,
+          foregroundColor: Colors.white,
         ),
         onPressed: () {
           if (title == "Account") {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AccountScreen()),
+            );
+          }
+          if (title == "Support & Help"){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SupportHelpScreen()),
             );
           }
         },
@@ -107,7 +120,7 @@ Widget _buildQuickButton(BuildContext context, String title) {
       width: 80,
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.white10,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),
     );
@@ -118,7 +131,7 @@ Widget _buildQuickButton(BuildContext context, String title) {
     return Column(
       children: [
         ListTile(
-          title: Text(title, style: TextStyle(fontSize: 16)),
+          title: Text(title, style: TextStyle(fontSize: 16,color: Colors.white)),
           tileColor: Colors.white10,
           onTap: () {
             if (title == "Account") {

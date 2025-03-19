@@ -1,9 +1,11 @@
 import 'package:diamond_app/wishlist.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'productPage.dart';
 import 'ShoppingCartPage.dart';
 import 'ProfileScreen.dart';
+import 'user_provider.dart';
 // void main() {
 //   runApp(MyApp());
 // }
@@ -24,11 +26,13 @@ import 'ProfileScreen.dart';
 
 
 class Template extends StatelessWidget {
-  Template({super.key});
+  final String? userId;
+  Template({super.key, required this.userId});
 
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
 
   final List<Widget> _pages = [
+    // ignore: unnecessary_this
     HomePage(),
     Wishlist(),
     ProductPage(),
@@ -40,6 +44,11 @@ class Template extends StatelessWidget {
   ];
  @override
 Widget build(BuildContext context) {
+  
+  Provider.of<UserProvider>(context).fetchUserData(userId!);
+  var userProvider = Provider.of<UserProvider>(context);
+  var userData = userProvider.userData;
+
   return Scaffold(
     backgroundColor: Colors.black12,
     appBar: PreferredSize(
@@ -75,7 +84,8 @@ Widget build(BuildContext context) {
           selectedItemColor: const Color.fromARGB(255, 219, 9, 9),
           unselectedItemColor: Colors.black,
           currentIndex: index,
-          onTap: (newIndex) => _currentIndex.value = newIndex,
+          // ignore: avoid_print
+          onTap: (newIndex) {print(userData); _currentIndex.value = newIndex; },
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Wishlist'),

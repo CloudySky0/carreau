@@ -45,7 +45,7 @@ class EmptyPage extends StatelessWidget {
   left: 76,
   child: GestureDetector(
     onTap: () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Template()),);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Template(userId: ,)),);
       print("Button Pressed!"); // Replace with navigation or action
     },
     child: Container(

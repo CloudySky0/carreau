@@ -53,7 +53,7 @@
 // class _ProductListScreenState extends State<ProductListScreen> {
 //   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 //   String selectedFilter = "All";  // Default filter option
-//   String selectedSort = "Relevance"; // Default sort option
+//    // Default sort option
 
 //   TextEditingController searchController = TextEditingController();
 //   void updateSearchQuery(String query) {
@@ -67,14 +67,6 @@
 
 // List<Product> products = [];
 // List<Product>  filteredProducts = [];
-//     // Selected Filters
-//   double _minPrice = 0;
-//   double _maxPrice = 2000000;
-//   String? _selectedDelivery;
-//   String? _selectedSort;
-//   List<String> _selectedBrands = [];
-//   List<String> _selectedCategory = [];
-//   bool _onlyDiscounted = false;
 
 //   @override
 //   void initState() {
@@ -96,197 +88,6 @@
 // }
 
 
-//    void _applyFilters() {
-//   setState(() {
-//     filteredProducts = products.where((product) {
-//       // Apply search filter
-//       if (widget.searchQuery.isNotEmpty) {
-//         if (!product.name.toLowerCase().contains(widget.searchQuery.toLowerCase())) {
-//           return false;
-//         }
-//       }
-
-//       // Convert price to number and filter
-//       double productPrice = (product.price) ?? 0;
-//       if (productPrice < _minPrice || productPrice > _maxPrice) {
-//         return false;
-//       }
-
-
-//       // Apply category filter
-//       if (_selectedCategory.isNotEmpty && !_selectedCategory.contains(product.category ?? "")) {
-//         return false;
-//       }
-
-//       // Apply delivery filter
-//       if (_selectedDelivery != null && product.delivery != _selectedDelivery) {
-//         return false;
-//       }
-
-//       // Apply discount filter
-//       if (_onlyDiscounted && (product.discount == null || product.discount!.isEmpty)) {
-//         return false;
-//       }
-
-//       return true;
-//     }).toList();
-
-//     // Apply sorting
-//     if (_selectedSort == "Price Low to High") {
-//       filteredProducts.sort((a, b) =>
-//         ((a.price) ?? 0).compareTo((b.price) ?? 0)
-//       );
-//     } else if (_selectedSort == "Price High to Low") {
-//       filteredProducts.sort((a, b) =>
-//         ((a.price) ?? 0).compareTo((b.price) ?? 0)
-//       );
-//     } else if (_selectedSort == "Best Rated") {
-//       filteredProducts.sort((a, b) =>
-//         (double.tryParse(b.rating?.split(" ")?.first ?? "0") ?? 0)
-//         .compareTo(double.tryParse(a.rating?.split(" ")?.first ?? "0") ?? 0)
-//       );
-//     }
-//   });
-// }
-
-//     void _showFilters() {
-//     showModalBottomSheet(
-//       context: context,
-//       isScrollControlled: true,
-//       builder: (context) {
-//         return StatefulBuilder(builder: (context, setModalState) {
-//           return Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: SingleChildScrollView(
-//               child: Column(
-//                 mainAxisSize: MainAxisSize.min,
-//                 children: [
-//                   // Price Range
-//                   Text("Price Range", style: TextStyle(fontWeight: FontWeight.bold)),
-//                   RangeSlider(
-//                     min: 0,
-//                     max: 2000000,
-//                     values: RangeValues(_minPrice, _maxPrice),
-//                     onChanged: (values) {
-//                       setModalState(() {
-//                         _minPrice = values.start;
-//                         _maxPrice = values.end;
-//                       });
-//                     },
-//                   ),
-//                   Text("₹${_minPrice.toInt()} - ₹${_maxPrice.toInt()}"),
-
-//                   Divider(),
-
-//                   // Brand Selection (Checkboxes)
-//                   Text("Brand", style: TextStyle(fontWeight: FontWeight.bold)),
-//                   Column(
-//                     children: ["Tiffany", "Carter", "Chaumet"].map((brand) {
-//                       return CheckboxListTile(
-//                         title: Text(brand),
-//                         value: _selectedBrands.contains(brand),
-//                         onChanged: (bool? value) {
-//                           setModalState(() {
-//                             value == true
-//                                 ? _selectedBrands.add(brand)
-//                                 : _selectedBrands.remove(brand);
-//                           });
-//                         },
-//                       );
-//                     }).toList(),
-//                   ),
-
-//                   Divider(),
-
-//                   // Delivery Type (Radio Buttons)
-//                   Text("Delivery Type", style: TextStyle(fontWeight: FontWeight.bold)),
-//                   Column(
-//                     children: ["Fast Delivery", "Standard Delivery", "Free Delivery"].map((option) {
-//                       return RadioListTile(
-//                         title: Text(option),
-//                         value: option,
-//                         groupValue: _selectedDelivery,
-//                         onChanged: (String? value) {
-//                           setModalState(() {
-//                             _selectedDelivery = value;
-//                           });
-//                         },
-//                       );
-//                     }).toList(),
-//                   ),
-
-//                   Divider(),
-
-//                   // Discount Filter
-//                   SwitchListTile(
-//                     title: Text("Only Show Discounted Products"),
-//                     value: _onlyDiscounted,
-//                     onChanged: (bool value) {
-//                       setModalState(() {
-//                         _onlyDiscounted = value;
-//                       });
-//                     },
-//                   ),
-
-//                   Divider(),
-
-//                   // Sort Options
-//                   Text("Categories", style: TextStyle(fontWeight: FontWeight.bold)),
-//                    Column(
-//                     children: ["Necklace", "Ring", "Earring","Pendant","Bracelet","Bangle","Anklet","Brooch","Watch"].map((category) {
-//                       return CheckboxListTile(
-//                         title: Text(category),
-//                         value: _selectedCategory.contains(category),
-//                         onChanged: (bool? value) {
-//                           setModalState(() {
-//                             value == true
-//                                 ? _selectedCategory.add(category)
-//                                 : _selectedCategory.remove(category);
-//                           });
-//                         },
-//                       );
-//                     }).toList(),
-//                   ),
-
-//                   SizedBox(height: 10),
-
-//                   // Apply & Reset Buttons
-//                   Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                     children: [
-//                       ElevatedButton(
-//                         onPressed: () {
-//                           setState(() {
-//                             _applyFilters();
-//                           });
-//                           Navigator.pop(context);
-//                         },
-//                         child: Text("Apply Filters"),
-//                       ),
-//                       TextButton(
-//                         onPressed: () {
-//                           setModalState(() {
-//                             _minPrice = 0;
-//                             _maxPrice = 2000000;
-//                             _selectedBrands.clear();
-//                             _selectedDelivery = null;
-//                             _selectedCategory.clear();
-//                             _selectedSort = null;
-//                             _onlyDiscounted = false;
-//                           });
-//                         },
-//                         child: Text("Reset"),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           );
-//         });
-//       },
-//     );
-//   }
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -329,31 +130,7 @@
 //             ),
 
 //             // Filter & Sort Row
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 // Filter Button
-//                 ElevatedButton(
-//                 onPressed: _showFilters,
-//                 child: Text("Filters"),
-//               ),
-
-//                 // Sort Button
-//                 PopupMenuButton<String>(
-//                   onSelected: (value) {
-//                     setState(() {
-//                       selectedSort = value;
-//                     });
-//                   },
-//                   itemBuilder: (context) => [
-//                     PopupMenuItem(value: "Relevance", child: Text("Relevance")),
-//                     PopupMenuItem(value: "Newest", child: Text("Newest")),
-//                     PopupMenuItem(value: "Best Sellers", child: Text("Best Sellers")),
-//                   ],
-//                   child: _filterButton("Sort"),
-//                 ),
-//               ],
-//             ),
+            
 
 //             SizedBox(height: 10),
 
@@ -374,31 +151,6 @@
 //     );
 //   }
 // }
-
-//  Widget _filterButton(String text) {
-//     return Container(
-//       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-//       decoration: BoxDecoration(
-//         color: Colors.white10,
-//         borderRadius: BorderRadius.circular(10),
-//         border: Border.all(color: Colors.white54),
-//       ),
-//       child: Row(
-//         children: [
-//           Icon(
-//             text == "Filters" ? Icons.filter_list : Icons.sort,
-//             color: Colors.white,
-//             size: 18,
-//           ),
-//           SizedBox(width: 5),
-//           Text(
-//             text,
-//             style: TextStyle(color: Colors.white),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
 
 
 // // Product Card Widget
@@ -494,41 +246,34 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Database.dart';
+import 'package:intl/intl.dart';
 
-class Product {
-  final String name;
-  final String image;
-  final double price;
-  final double oldPrice;
-  final String discount;
-  final String rating;
-  final String category;
-  final String delivery;
-
-  Product({
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.oldPrice,
-    required this.discount,
-    required this.rating,
-    required this.category,
-    required this.delivery,
-  });
-
-  factory Product.fromMap(Map<String, dynamic> data) {
-    return Product(
-      name: data["name"]?.toString() ?? "",
-      image: data["imageURL"]?.toString() ?? "",
-      price: (data["price"] is num) ? (data["price"] as num).toDouble() : 0.0,
-      oldPrice: (data["old_price"] is num) ? (data["old_price"] as num).toDouble() : 0.0,
-      discount: data["discount"]?.toString() ?? "",
-      rating: data["rating"]?.toString() ?? "",
-      category: data["category"]?.toString() ?? "",
-      delivery: data["delivery"]?.toString() ?? "",
+ Widget _filterButton(String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white54),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            text == "Filters" ? Icons.filter_list : Icons.sort,
+            color: Colors.white,
+            size: 18,
+          ),
+          SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
-}
+
 
 class ProductListScreen extends StatefulWidget {
   String searchQuery;
@@ -547,24 +292,33 @@ class _ProductListScreenState extends State<ProductListScreen> {
   List<Product> filteredProducts = [];
   TextEditingController searchController = TextEditingController();
 
+      // Selected Filters
+  double _minPrice = 0;
+  double _maxPrice = 2000000;
+  String? _selectedDelivery;
+  String? _selectedSort;
+  List<String> _selectedBrands = [];
+  List<String> _selectedCategory = [];
+  bool _onlyDiscounted = false;
+
   @override
   void initState() {
     super.initState();
-    _fetchProductsFromFirebase();
+    fetchProducts();
     updateSearchQuery(widget.searchQuery);
   }
 
-  void _fetchProductsFromFirebase() async {
-    _firestore.collection('products').get().then((snapshot) {
-      setState(() {
-        products = snapshot.docs.map((doc) => Product.fromMap(doc.data())).toList();
-        filteredProducts = products;
-      });
-    }).catchError((error) {
-      print("Error fetching products: $error");
-    });
-  }
-
+void fetchProducts() async {
+  
+   products = await Product.fetchProductsFromFirebase() ;
+  setState(() {
+     filteredProducts = products;
+  });
+ 
+  print("products:");
+  print(products);
+}
+ 
   void _searchProducts(String query) {
     setState(() {
       filteredProducts = products.where((product) {
@@ -579,6 +333,192 @@ class _ProductListScreenState extends State<ProductListScreen> {
     TextPosition(offset: searchController.text.length), // Moves cursor to end
   );
 }
+
+
+   void _applyFilters() {
+  setState(() {
+    filteredProducts = products.where((product) {
+      // Convert price to number and filter
+      double productPrice = (product.price) ?? 0;
+      if (productPrice < _minPrice || productPrice > _maxPrice) {
+        return false;
+      }
+
+
+      // Apply category filter
+      if (_selectedCategory.isNotEmpty && !_selectedCategory.contains(product.category ?? "")) {
+        return false;
+      }
+
+      // Apply delivery filter
+      if (_selectedDelivery != null && product.delivery != _selectedDelivery) {
+        return false;
+      }
+
+      // Apply discount filter
+      if (_onlyDiscounted && (product.discount == null || product.discount!.isEmpty)) {
+        return false;
+      }
+
+      return true;
+    }).toList();
+
+    // Apply sorting
+    if (_selectedSort == "Price Low to High") {
+      filteredProducts.sort((a, b) =>
+        ((a.price) ?? 0).compareTo((b.price) ?? 0)
+      );
+    } else if (_selectedSort == "Price High to Low") {
+      filteredProducts.sort((a, b) =>
+        ((a.price) ?? 0).compareTo((b.price) ?? 0)
+      );
+    } else if (_selectedSort == "Best Rated") {
+      filteredProducts.sort((a, b) =>
+        (double.tryParse(b.rating?.split(" ")?.first ?? "0") ?? 0)
+        .compareTo(double.tryParse(a.rating?.split(" ")?.first ?? "0") ?? 0)
+      );
+    }
+  });
+}
+
+      void _showFilters() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setModalState) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Price Range
+                  Text("Price Range", style: TextStyle(fontWeight: FontWeight.bold)),
+                  RangeSlider(
+                    min: 0,
+                    max: 2000000,
+                    values: RangeValues(_minPrice, _maxPrice),
+                    onChanged: (values) {
+                      setModalState(() {
+                        _minPrice = values.start;
+                        _maxPrice = values.end;
+                      });
+                    },
+                  ),
+                  Text("₹${_minPrice.toInt()} - ₹${_maxPrice.toInt()}"),
+
+                  Divider(),
+
+                  // Brand Selection (Checkboxes)
+                  Text("Brand", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Column(
+                    children: ["Tiffany", "Carter", "Chaumet"].map((brand) {
+                      return CheckboxListTile(
+                        title: Text(brand),
+                        value: _selectedBrands.contains(brand),
+                        onChanged: (bool? value) {
+                          setModalState(() {
+                            value == true
+                                ? _selectedBrands.add(brand)
+                                : _selectedBrands.remove(brand);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+
+                  Divider(),
+
+                  // Delivery Type (Radio Buttons)
+                  Text("Delivery Type", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Column(
+                    children: ["Fast Delivery", "Standard Delivery", "Free Delivery"].map((option) {
+                      return RadioListTile(
+                        title: Text(option),
+                        value: option,
+                        groupValue: _selectedDelivery,
+                        onChanged: (String? value) {
+                          setModalState(() {
+                            _selectedDelivery = value;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+
+                  Divider(),
+
+                  // Discount Filter
+                  SwitchListTile(
+                    title: Text("Only Show Discounted Products"),
+                    value: _onlyDiscounted,
+                    onChanged: (bool value) {
+                      setModalState(() {
+                        _onlyDiscounted = value;
+                      });
+                    },
+                  ),
+
+                  Divider(),
+
+                  // Sort Options
+                  Text("Categories", style: TextStyle(fontWeight: FontWeight.bold)),
+                   Column(
+                    children: ["Necklace", "Ring", "Earring","Pendant","Bracelet","Bangle","Anklet","Brooch","Watch"].map((category) {
+                      return CheckboxListTile(
+                        title: Text(category),
+                        value: _selectedCategory.contains(category),
+                        onChanged: (bool? value) {
+                          setModalState(() {
+                            value == true
+                                ? _selectedCategory.add(category)
+                                : _selectedCategory.remove(category);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  // Apply & Reset Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _applyFilters();
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text("Apply Filters"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setModalState(() {
+                            _minPrice = 0;
+                            _maxPrice = 2000000;
+                            _selectedBrands.clear();
+                            _selectedDelivery = null;
+                            _selectedCategory.clear();
+                            _selectedSort = null;
+                            _onlyDiscounted = false;
+                          });
+                        },
+                        child: Text("Reset"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+      },
+    );
+  }
 
 
   @override
@@ -618,7 +558,30 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   },
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Filter Button
+                ElevatedButton(
+                onPressed: _showFilters,
+                child: Text("Filters"),
+              ),
 
+                // Sort Button
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    setState(() {
+                    });
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(value: "Relevance", child: Text("Relevance")),
+                    PopupMenuItem(value: "Newest", child: Text("Newest")),
+                    PopupMenuItem(value: "Best Sellers", child: Text("Best Sellers")),
+                  ],
+                  child: _filterButton("Sort"),
+                ),
+              ],
+            ),
             // Product List
             Expanded(
               child: filteredProducts.isEmpty
@@ -693,12 +656,12 @@ class ProductCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "₹${product.price.toStringAsFixed(2)}",
+                      NumberFormat.currency(locale: 'en_IN', symbol: 'Rs. ').format(product.price),
                       style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 5),
                     Text(
-                      "₹${product.oldPrice.toStringAsFixed(2)}",
+                      NumberFormat.currency(locale: 'en_IN', symbol: 'Rs. ').format(product.oldPrice),
                       style: TextStyle(
                         color: Colors.white54,
                         fontSize: 12,
@@ -718,7 +681,7 @@ class ProductCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                     FavoriteButton(),
+                     FavoriteButton(productname: product.name,),
                      SizedBox(width: 50),
                   ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -729,6 +692,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   onPressed: () {
                     print("Added ${product.name} to cart");
+                    Product.add_to_cart(product.name);
                   },
                   child: Text("Add to cart"),
                 ),
@@ -744,14 +708,29 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-
 class FavoriteButton extends StatefulWidget {
+  final String productname;
+  const FavoriteButton({super.key, required this.productname});
+
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = false; // Track selection state
+  bool isFavorite = false; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    checkFavoriteStatus();
+  }
+
+  void checkFavoriteStatus() async {
+    bool favoriteStatus = await Product.isProductInWishlist(widget.productname);
+    setState(() {
+      isFavorite = favoriteStatus; // Update state after async call
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -761,6 +740,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         color: isFavorite ? Colors.red : Colors.grey, // Change color
       ),
       onPressed: () {
+        if(!isFavorite){
+          Product.add_to_wishlist(widget.productname);
+        }else{
+          Product.removeFromWishlist(widget.productname);
+        }
         setState(() {
           isFavorite = !isFavorite; // Toggle state
         });

@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'package:diamond_app/login.dart';
 import 'package:diamond_app/template.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'WhyShopWithUs.dart';
 
 class ChangingBackgroundScreen extends StatefulWidget {
-  const ChangingBackgroundScreen({super.key});
+  final String? userId;
+  const ChangingBackgroundScreen({super.key, required this.userId});
 
   @override
   _ChangingBackgroundScreenState createState() =>
@@ -75,8 +78,12 @@ class _ChangingBackgroundScreenState extends State<ChangingBackgroundScreen> {
             right: 50,
             child: GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WhyShopWithUsScreen()),);
-                print("Button Pressed!");
+              if(widget.userId != null){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WhyShopWithUsScreen(userid: widget.userId,)),);
+                print("Button Pressed!, ${widget.userId}");
+              }else{
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()),);
+              }
               },
               child: Container(
                 width: 261,
