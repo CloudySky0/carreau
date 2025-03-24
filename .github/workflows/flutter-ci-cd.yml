@@ -3,10 +3,10 @@ name: Flutter Web CI/CD
 on:
   push:
     branches:
-      - main
+      - firebase_host
   pull_request:
     branches:
-      - main
+      - firebase_host
 
 jobs:
   build-web:
