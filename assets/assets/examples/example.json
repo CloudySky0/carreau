@@ -1,0 +1,107 @@
+[
+    {
+      "name": "Diamond Stud Earrings",
+      "category": "Earrings",
+      "imageUrl": "assets/images/earings.jpg",
+      "price": 399.99
+    },
+    {
+      "name": "Sapphire Pendant Necklace",
+      "category": "Necklaces",
+      "imageUrl": "assets/images/necklace.jpg",
+      "price": 599.99
+    },
+    {
+      "name": "Rose Gold Bracelet",
+      "category": "Bracelets",
+      "imageUrl": "assets/images/bracelet.jpg",
+      "price": 179.99
+    },
+    
+        {
+          "name": "Brilliant Cut Diamond",
+          "category": "Round",
+          "imageUrl": "assets/images/earings.jpg",
+          "price": 4999.99
+        },
+        {
+          "name": "Princess Cut Diamond",
+          "category": "Square",
+          "imageUrl": "assets/images/necklace.jpg",
+          "price": 5999.99
+        },
+        {
+          "name": "Emerald Cut Diamond",
+          "category": "Rectangle",
+          "imageUrl": "assets/images/bracelet.jpg",
+          "price": 6999.99
+        },
+        {
+          "name": "Oval Cut Diamond",
+          "category": "Oval",
+          "imageUrl": "assets/images/necklace.jpg",
+          "price": 6499.99
+        },
+        {
+          "name": "Cushion Cut Diamond",
+          "category": "Square",
+          "imageUrl": "assets/images/bracelet.jpg",
+          "price": 5799.99
+        },
+        {
+          "name": "Marquise Cut Diamond",
+          "category": "Oval",
+          "imageUrl": "assets/images/earings.jpg",
+          "price": 6899.99
+        },
+        {
+          "name": "Heart Cut Diamond",
+          "category": "Heart",
+          "imageUrl": "assets/images/necklace.jpg",
+          "price": 7299.99
+        },
+        {
+          "name": "Asscher Cut Diamond",
+          "category": "Square",
+          "imageUrl": "assets/images/bracelet.jpg",
+          "price": 6399.99
+        },
+        {
+          "name": "Pear Cut Diamond",
+          "category": "Teardrop",
+          "imageUrl": "assets/images/earings.jpg",
+          "price": 6799.99
+        },
+        {
+          "name": "Radiant Cut Diamond",
+          "category": "Rectangle",
+          "imageUrl": "assets/images/necklace.jpg",
+          "price": 6199.99
+        },
+        {
+          "name": "Rose Cut Diamond",
+          "category": "Vintage",
+          "imageUrl": "assets/images/bracelet.jpg",
+          "price": 5299.99
+        },
+        {
+          "name": "Trillion Cut Diamond",
+          "category": "Triangle",
+          "imageUrl": "assets/images/earings.jpg",
+          "price": 6599.99
+        },
+        {
+          "name": "Old European Cut Diamond",
+          "category": "Antique",
+          "imageUrl": "assets/images/necklace.jpg",
+          "price": 5599.99
+        },
+        {
+          "name": "Hexagon Cut Diamond",
+          "category": "Hexagon",
+          "imageUrl": "assets/images/bracelet.jpg",
+          "price": 6099.99
+        }
+          
+  ]
+  
