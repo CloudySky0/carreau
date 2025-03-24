@@ -9,13 +9,59 @@ import 'changingBackground.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'template.dart';
 import 'login.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
+
+const firebaseConfig = {
+
+  "apiKey": "AIzaSyDye33flY1vtgJJcASR78O5Vth1myQFmIU",
+
+  "authDomain": "diamond-app-197ff.firebaseapp.com",
+
+  "projectId": "diamond-app-197ff",
+
+  "storageBucket": "diamond-app-197ff.firebasestorage.app",
+
+  "messagingSenderId": "485626860441",
+
+  "appId": "1:485626860441:web:992d553874477f91cd7908",
+
+  "measurementId": "G-GHEJPHF9DK"
+
+};
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
-  
+  FirebaseOptions firebaseOptions;
+
+  if (kIsWeb) {
+    // Web Firebase configuration
+    firebaseOptions = FirebaseOptions(
+    apiKey: "AIzaSyDye33flY1vtgJJcASR78O5Vth1myQFmIU",
+
+  authDomain: "diamond-app-197ff.firebaseapp.com",
+
+  projectId: "diamond-app-197ff",
+
+  storageBucket: "diamond-app-197ff.firebasestorage.app",
+
+  messagingSenderId: "485626860441",
+
+  appId: "1:485626860441:web:992d553874477f91cd7908",
+
+  measurementId: "G-GHEJPHF9DK"
+
+    );
+     await Firebase.initializeApp(options: firebaseOptions);
+  } else if (Platform.isAndroid) {
+    // Android Firebase configuration
+    await Firebase.initializeApp();
+  } else {
+    throw UnsupportedError("Unsupported platform");
+  }
+  // await Firebase.initializeApp();  
   String? userId = await UserService.getUserId();
 
   runApp(JewelryMarketApp(userId: userId,));

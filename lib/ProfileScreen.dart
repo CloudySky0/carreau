@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:diamond_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'accountPage.dart';
@@ -5,6 +8,8 @@ import 'appPreferences.dart';
 import 'paymentMethods.dart';
 import 'supportHelpScreen.dart';
 import 'user_provider.dart';
+import 'user_service.dart';
+import 'main.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -150,6 +155,13 @@ Widget _buildQuickButton(BuildContext context, String title) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SavedPaymentMethodsScreen()),
+            );
+          }
+          if (title == "Logout") {
+             UserService.clearUser();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => JewelryMarketApp(userId: null,)),
             );
           }
           },

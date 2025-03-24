@@ -8,44 +8,67 @@ Future<void> uploadJsonToFirestore() async {
     await Firebase.initializeApp();
 
     // JSON data stored in a local variable
-    Map<String, dynamic> jsonData = {
-       "profile": {
-      "name": "Megh",
-      "email": "johndoe@example.com",
-      "role": "customer",
-        "phone": "+1234567890",
-        "address": "123 Street, City, Country",
-        "profileImage": "https://example.com/profile.jpg",
-      },
-       "cart": {},
+    // Map<String, dynamic> jsonData = {
+    //    "profile": {
+    //   "name": "Megh",
+    //   "email": "johndoe@example.com",
+    //   "role": "customer",
+    //     "phone": "+1234567890",
+    //     "address": "123 Street, City, Country",
+    //     "profileImage": "https://example.com/profile.jpg",
+    //   },
+    //    "cart": {},
        
-       "orders": {
-        "orderId1": {
-          "status": "delivered",
-          "total_price": 75.97,
-          "ordered_at": "2025-03-18T12:30:00Z",
-          "items": {
-            "productId1": {
-              "name": "Product 1",
-              "price": 29.99,
-              "quantity": 2
-            },
-            "productId2": {
-              "name": "Product 2",
-              "price": 15.99,
-              "quantity": 1
-            }
-          }
-        }
-      }
+    //    "orders": {
+    //     "orderId1": {
+    //       "status": "delivered",
+    //       "total_price": 75.97,
+    //       "ordered_at": "2025-03-18T12:30:00Z",
+    //       "items": {
+    //         "productId1": {
+    //           "name": "Product 1",
+    //           "price": 29.99,
+    //           "quantity": 2
+    //         },
+    //         "productId2": {
+    //           "name": "Product 2",
+    //           "price": 15.99,
+    //           "quantity": 1
+    //         }
+    //       }
+    //     }
+    //   }
+    // };
+
+    Map<String, dynamic> jsonData = {
+  "cart": [
+    {
+      "productRef": "/products/chaumet_platinum_ring",
+      "quantity": 2
+    },
+    {
+      "productRef": "/products/harry_winston_necklace",
+      "quantity": 1
+    }
+  ]
     };
-
-
     // Firestore reference
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     
     // Upload JSON as a document
-    await firestore.collection("Users").doc().set(jsonData);
+    var userDoc = await firestore.collection("Users").doc('5510lA9P8NHK2Rc31mJX');
+    await userDoc.update({
+    "cart": FieldValue.arrayUnion( [
+    {
+      "productRef": "/products/chaumet_platinum_ring",
+      "quantity": 2
+    },
+    {
+      "productRef": "/products/harry_winston_necklace",
+      "quantity": 1
+    }
+  ])
+  });
 
     print("✅ JSON uploaded successfully!");
   } catch (e) {
@@ -77,8 +100,8 @@ Future<void> setUserProfileReference() async {
 void main() async {
   
   WidgetsFlutterBinding.ensureInitialized(); 
-  // await uploadJsonToFirestore();
-  await setUserProfileReference();
+  await uploadJsonToFirestore();
+  // await setUserProfileReference();
 }
 
 

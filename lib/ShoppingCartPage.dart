@@ -10,7 +10,13 @@ class ShoppingCartPage extends StatefulWidget {
 }
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
-  late Future<List<Product>> cartFuture;
+  late Future<List<Map<Product, dynamic>>> cartFuture;
+ void refreshPage() {
+  setState(() {
+    var userData = Provider.of<UserProvider>(context, listen: false).userData;
+    cartFuture = Product.fetchCart(userData); // ✅ Refetch cart data
+  });
+}
 
   @override
   void initState() {
@@ -36,70 +42,101 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: FutureBuilder<List<Product>>(
-        future: cartFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(
-                child: Text("Error: ${snapshot.error}",
-                    style: TextStyle(color: Colors.white)));
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-                child: Text("No items in cart",
-                    style: TextStyle(color: Colors.white)));
-          }
+      body: FutureBuilder<List<Map<Product, dynamic>>>(
+  future: cartFuture,
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
+    if (snapshot.hasError) {
+      return Center(
+        child: Text(
+          "Error: ${snapshot.error}",
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
+    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      return Center(
+        child: Text(
+          "No items in cart",
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
 
-          List<Product> cartItems = snapshot.data!;
-          int productQuantities = cartItems.length;
+    List<Map<Product, dynamic>> cartItems = snapshot.data!;
+    int totalQuantity = cartItems.fold(
+        0, (sum, item) => sum + (item.values.first as int));
 
-          return Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(12),
-                color: Colors.grey[800],
-                child: Row(
-                  children: [
-                    Icon(Icons.local_shipping, color: Colors.white),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Delivery for Rucs\nLorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) =>
-                      ProductCard(product: cartItems[index]),
-                ),
-              ),
-              if (productQuantities != 0) // ✅ Now it only checks after retrieval
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16),
-                  color: Colors.orange,
-                  child: Center(
-                    child: Text(
-                      'Proceed to buy ($productQuantities items)',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
+    return StatefulBuilder(
+      builder: (context, setState) => Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            color: Colors.grey[800],
+            child: Row(
+              children: [
+                Icon(Icons.local_shipping, color: Colors.white),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Delivery for Rucs\nLorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ),
-            ],
-          );
-        },
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: cartItems.length,
+              itemBuilder: (context, index) {
+                Product product = cartItems[index].keys.first;
+                int quantity = cartItems[index].values.first;
+
+                return ProductCard(
+                  product: product,
+                  quantity: quantity,
+                  onIncrement: () {
+                    setState(() {
+                      cartItems[index][product] = quantity + 1;
+                      totalQuantity++;
+                    });
+                  },
+                  onDecrement: () {
+                    setState(() {
+                      if (quantity > 1) {
+                        cartItems[index][product] = quantity - 1;
+                        totalQuantity--;
+                      }
+                    });
+                  },
+                  refreshPage: refreshPage
+                );
+              },
+            ),
+          ),
+          if (totalQuantity != 0)
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(16),
+              color: Colors.orange,
+              child: Center(
+                child: Text(
+                  'Proceed to buy ($totalQuantity items)',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              ),
+            ),
+        ],
       ),
+    );
+  },
+)
     );
   }
 }
@@ -138,7 +175,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 //                     ElevatedButton(
 //                       onPressed: () {
 //                         setState(() {
-//                           productQuantities.remove(title);
+//                           totalQuantity.remove(title);
 //                         });
 //                       },
 //                       child: Text('Delete'),
@@ -159,7 +196,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 //                       onChanged: (value) {
 //                         if (value != null) {
 //                           setState(() {
-//                             productQuantities[title] = value;
+//                             totalQuantity[title] = value;
 //                           });
 //                         }
 //                       },
@@ -179,8 +216,18 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
 class ProductCard extends StatelessWidget {
   final Product product;
-
-  ProductCard({required this.product});
+  final int quantity;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+  final VoidCallback refreshPage;
+  
+   ProductCard({
+    required this.product,
+    required this.quantity,
+    required this.onIncrement,
+    required this.onDecrement,
+    required this.refreshPage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +245,7 @@ class ProductCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              product.image,
+              "https://cors-anywhere.herokuapp.com/${product.image}",
               width: 100,
               height: 100,
               fit: BoxFit.cover,
@@ -252,8 +299,17 @@ class ProductCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                     FavoriteButton(),
-                     SizedBox(width: 50),
+                   
+                     FavoriteButton(productname: product.name,),
+                     IconButton(
+                  icon: Icon(Icons.remove,color: Colors.white),
+                  onPressed: quantity > 1 ? onDecrement : null,
+                ),
+                Text('$quantity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                IconButton(
+                  icon: Icon(Icons.add,color: Colors.white),
+                  onPressed: onIncrement,
+                ),
                   ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -261,11 +317,13 @@ class ProductCard extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  onPressed: () {
-                    print("Added ${product.name} to cart");
-                    Product.add_to_cart(product.name);
+                  onPressed:  () async {
+    print("Deleting ${product.name} from cart");
+    await Product.removefromCart(product.name);
+    refreshPage();
+                    // Product.add_to_cart(product.name);
                   },
-                  child: Text("Add to cart"),
+                  child: Text(" Delete "),
                 ),
                
                   ]
@@ -281,12 +339,28 @@ class ProductCard extends StatelessWidget {
 
 
 class FavoriteButton extends StatefulWidget {
+  final String productname;
+  const FavoriteButton({super.key, required this.productname});
+
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = false; // Track selection state
+  bool isFavorite = false; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    checkFavoriteStatus();
+  }
+
+  void checkFavoriteStatus() async {
+    bool favoriteStatus = await Product.isProductInWishlist(widget.productname);
+    setState(() {
+      isFavorite = favoriteStatus; // Update state after async call
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -296,6 +370,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         color: isFavorite ? Colors.red : Colors.grey, // Change color
       ),
       onPressed: () {
+        if(!isFavorite){
+          Product.add_to_wishlist(widget.productname);
+        }else{
+          Product.removeFromWishlist(widget.productname);
+        }
         setState(() {
           isFavorite = !isFavorite; // Toggle state
         });

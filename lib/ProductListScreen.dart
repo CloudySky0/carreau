@@ -248,6 +248,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Database.dart';
 import 'package:intl/intl.dart';
+import 'productDetailPage.dart';
 
  Widget _filterButton(String text) {
     return Container(
@@ -613,7 +614,14 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProductDetailPage(product: product,)),
+      );
+    },
+    child: Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -627,7 +635,7 @@ class ProductCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              product.image,
+              "https://cors-anywhere.herokuapp.com/${product.image}",
               width: 100,
               height: 100,
               fit: BoxFit.cover,
@@ -692,7 +700,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   onPressed: () {
                     print("Added ${product.name} to cart");
-                    Product.add_to_cart(product.name);
+                    Product.add_to_cart(product.name, 1);
                   },
                   child: Text("Add to cart"),
                 ),
@@ -704,7 +712,7 @@ class ProductCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
