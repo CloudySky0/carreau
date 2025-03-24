@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'user_service.dart';
 import 'template.dart';
+// import 'signup_page.dart'; // Import the SignupPage
 
 class LoginPage extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
     if (userId != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Template(userId: userId,)),
+        MaterialPageRoute(builder: (context) => Template(userId: userId)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,6 +89,17 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 50),
                       ),
                     ),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  print("signing");
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => SignupPage()), // Navigate to SignupPage
+                  // );
+                },
+                child: Text("Don't have an account? Sign Up", style: TextStyle(color: Colors.orange)),
+              ),
             ],
           ),
         ),
