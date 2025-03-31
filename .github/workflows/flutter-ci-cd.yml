@@ -26,7 +26,7 @@ jobs:
       - name: Run Static Code Analysis (SAST) - CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: flutter  # Change to your app's language (e.g., flutter)
+          languages: dart  # Change to your app's language (e.g., flutter)
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
