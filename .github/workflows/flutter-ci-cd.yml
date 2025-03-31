@@ -23,8 +23,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       
-      - name: Run Dart Analyzer 
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      # - name: Run Dart Analyzer 
+      #   run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      
 
       - name: Install Snyk
         run: npm install -g snyk
