@@ -30,6 +30,10 @@ jobs:
       - name: Install Snyk
         run: npm install -g snyk
 
+      # Authenticate with Snyk
+      - name: Authenticate with Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
       - name: Run Snyk to check Dart dependencies
         run: snyk test --all-projects
 
