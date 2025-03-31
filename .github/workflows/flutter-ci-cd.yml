@@ -24,9 +24,12 @@ jobs:
         run: flutter pub get
 
       - name: Run Static Code Analysis (SAST) - CodeQL
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/init@v3
         with:
-          category: "security"
+          languages: javascript  # Change to your app's language (e.g., flutter)
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 
       - name: Build Flutter Web
         run: flutter build web --release
@@ -47,4 +50,4 @@ jobs:
       - name: Run OWASP ZAP Dynamic Security Scan
         uses: zaproxy/action-baseline@v0.7.0
         with:
-          target: "https://diamond-app-197ff.web.app"  
+          target: "https://diamond-app-197ff.web.app/"  # Change to your Firebase hosting URL
