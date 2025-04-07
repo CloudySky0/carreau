@@ -48,7 +48,6 @@ class Product {
 
     // Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
 
-   
       // Get stored references
       List<dynamic> wishlistRefs = userData!['wishlist'];
 
@@ -66,34 +65,38 @@ class Product {
   return wishlist;
 }
 
-
-  static Future<List<Product>> fetchCart(Map<String, dynamic>? userData) async {
+static Future<List<Map<Product, dynamic>>> fetchCart(Map<String, dynamic>? userData) async {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-   List<Product> Cart = [];
-  // Fetch user document
+  List<Map<Product, dynamic>> cartItems = [];
+print('yay1');
+  if (userData == null || !userData.containsKey('cart')) return cartItems;
+print('yay2');
+  List<dynamic> cartRefs = userData['cart']; // Cart should contain objects with {ref, quantity}
 
-    // Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+  for (var item in cartRefs) {
+    try {
+      if (item is Map<String, dynamic> && item.containsKey('productRef') && item.containsKey('quantity')) {
+        var ref = item['productRef']; // Get reference
+        int quantity = (item['quantity'] as num).toInt(); // Ensure quantity is int
 
-   
-      // Get stored references
-      List<dynamic> CartRefs = userData!['cart'];
-
-      // Convert them to DocumentReference objects
-      for (var ref in CartRefs) {
-    DocumentSnapshot productSnapshot = await ref.get();
-    // print(productSnapshot.data());
-  
-    if (productSnapshot.exists) {
-      Cart.add(Product.fromMap(productSnapshot.data() as Map<String, dynamic>));
-      print(Cart[0]);
-        print("yay");
+          DocumentSnapshot productSnapshot = await ref.get();
+          if (productSnapshot.exists) {
+            cartItems.add({ Product.fromMap(productSnapshot.data() as Map<String, dynamic>): quantity});
+            print('yay3');
+               // Store quantity
+            // });
+          }
+          print('yay');
+        
+      }
+    } catch (e) {
+      print("Error fetching cart item: $e");
     }
   }
-  return Cart;
-
+  return cartItems;
 }
 
-  static void add_to_cart( String productname)async {
+  static void add_to_cart( String productname, int quantity)async {
     try{
     FirebaseFirestore firestore = FirebaseFirestore.instance;
       QuerySnapshot query = await FirebaseFirestore.instance
@@ -102,11 +105,23 @@ class Product {
       .limit(1) // To ensure only one result
       .get();
 
+      // Map<String, dynamic> cartItem;
+
     String? userId = await UserService.getUserId();
-    DocumentReference item = query.docs.first.reference;
-    await firestore.collection('Users').doc(userId).set({
-      'cart': FieldValue.arrayUnion([item])
-  }, SetOptions(merge: true));
+    DocumentReference itemRef = query.docs.first.reference;
+    print({
+  "productRef": itemRef, // Should be a DocumentReference
+  "quantity": quantity,  // Should be an int
+});
+    await firestore.collection('Users').doc(userId).update({
+  'cart': FieldValue.arrayUnion([
+    {
+      "productRef": itemRef, // Ensure this is a valid DocumentReference
+      "quantity": quantity,  // Ensure this is an int, not a String
+    }
+  ])
+});
+
     }catch (e) {
     print("❌ Error uploading JSON: $e");
   }
@@ -150,7 +165,41 @@ class Product {
     print("Error removing product: $e");
   }
 }
+static Future<void> removefromCart(String productname) async {
+  try {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    String? userId = await UserService.getUserId();
+    DocumentSnapshot userDoc = await firestore.collection('Users').doc(userId).get();
+    QuerySnapshot query = await FirebaseFirestore.instance
+      .collection('products') // Change to your collection name
+      .where('name', isEqualTo: productname)
+      .limit(1) // To ensure only one result
+      .get();
+      DocumentReference productRef = query.docs.first.reference;
+    
+    List<dynamic> cart = userDoc['cart']; // Get the cart array
 
+  // Find the item to remove
+  Map<String, dynamic>? itemToRemove;
+  for (var item in cart) {
+    if (item['productRef'] == productRef) {
+      itemToRemove = item;
+      break;
+    }
+  }
+
+  if (itemToRemove != null) {
+    // Remove item from cart
+    await firestore.collection('Users').doc(userId).update({
+      'cart': FieldValue.arrayRemove([itemToRemove])
+    });
+  }
+
+    print("Product removed from Cart");
+  } catch (e) {
+    print("Error removing product: $e");
+  }
+}
 
   static Future<bool> isProductInWishlist(String productName) async {
   try {

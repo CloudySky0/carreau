@@ -79,7 +79,7 @@ class _ChangingBackgroundScreenState extends State<ChangingBackgroundScreen> {
             child: GestureDetector(
               onTap: () {
               if(widget.userId != null){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WhyShopWithUsScreen(userid: widget.userId,)),);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Template(userId: widget.userId)),);
                 print("Button Pressed!, ${widget.userId}");
               }else{
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()),);

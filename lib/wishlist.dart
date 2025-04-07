@@ -265,7 +265,7 @@ class WishlistItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(item.image ?? 'assets/images/default.jpg', width: 100, height: 100, fit: BoxFit.cover),
+            Image.network("https://cors-anywhere.herokuapp.com/${item.image}" ?? 'assets/images/default.jpg', width: 100, height: 100, fit: BoxFit.cover),
             SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -279,7 +279,7 @@ class WishlistItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      FavoriteButton(),
+                      FavoriteButton(productname: item.name,),
                       AddToCartButton(),
                     ],
                   )
@@ -314,7 +314,7 @@ class ProductCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              product.image,
+              "https://cors-anywhere.herokuapp.com/${product.image}",
               width: 100,
               height: 100,
               fit: BoxFit.cover,
@@ -368,7 +368,7 @@ class ProductCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                     FavoriteButton(),
+                     FavoriteButton(productname: product.name,),
                      SizedBox(width: 50),
                   ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -379,7 +379,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   onPressed: () {
                     print("Added ${product.name} to cart");
-                    Product.add_to_cart(product.name);
+                    Product.add_to_cart(product.name, 1);
                   },
                   child: Text("Add to cart"),
                 ),
@@ -398,18 +398,46 @@ class ProductCard extends StatelessWidget {
 
 
 class FavoriteButton extends StatefulWidget {
+  final String productname;
+  const FavoriteButton({super.key, required this.productname});
+
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = true;
+  bool isFavorite = false; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    checkFavoriteStatus();
+  }
+
+  void checkFavoriteStatus() async {
+    bool favoriteStatus = await Product.isProductInWishlist(widget.productname);
+    setState(() {
+      isFavorite = favoriteStatus; // Update state after async call
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: isFavorite ? Colors.red : Colors.grey),
-      onPressed: () => setState(() => isFavorite = !isFavorite),
+      icon: Icon(
+        isFavorite ? Icons.favorite : Icons.favorite_border, // Change icon
+        color: isFavorite ? Colors.red : Colors.grey, // Change color
+      ),
+      onPressed: () {
+        if(!isFavorite){
+          Product.add_to_wishlist(widget.productname);
+        }else{
+          Product.removeFromWishlist(widget.productname);
+        }
+        setState(() {
+          isFavorite = !isFavorite; // Toggle state
+        });
+      },
     );
   }
 }

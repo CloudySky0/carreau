@@ -243,7 +243,7 @@ SizedBox(
         Product product = products[index];
 
         // ✅ No need to check null values, handled in fromMap()
-        return _buildBrandCard(context, product);
+        return _buildFeatureCard(product.image, product.name);
       },
     );
   },
@@ -281,7 +281,7 @@ Widget _buildBrandCard(BuildContext context,Product product) {
             borderRadius: BorderRadius.vertical(
                 top: Radius.circular(10), bottom: Radius.circular(10)),
             child: Image.network(
-              product.image,
+              'https://cors-anywhere.herokuapp.com/${product.image}',
               fit: BoxFit.cover,
               width: double.infinity,
               loadingBuilder: (context, child, loadingProgress) {
@@ -327,7 +327,7 @@ Widget _buildFeatureCard(String imageUrl, String brandName) {
             borderRadius: BorderRadius.vertical(
                 top: Radius.circular(10), bottom: Radius.circular(10)),
             child: Image.network(
-              imageUrl,
+              'https://cors-anywhere.herokuapp.com/${imageUrl}',
               fit: BoxFit.cover,
               width: double.infinity,
               loadingBuilder: (context, child, loadingProgress) {

@@ -34,7 +34,7 @@ class ProductDetailPage extends StatelessWidget {
               height: 250,
               child: PageView(
                 children: [
-                  Image.network(product.image, fit: BoxFit.cover), // Add images in assets
+                  Image.network("https://cors-anywhere.herokuapp.com/${product.image}", fit: BoxFit.cover), // Add images in assets
                   // Image.asset('assets/images/earings.jpg', fit: BoxFit.cover),
                 ],
               ),
@@ -57,7 +57,7 @@ class ProductDetailPage extends StatelessWidget {
                       SizedBox(width: 5),
                       Text(product.rating, style: TextStyle(color: Colors.white)),
                       Spacer(),
-                      FavoriteButton(),
+                      FavoriteButton(productname: product.name,),
                     ],
                   ),
 
@@ -126,7 +126,9 @@ class ProductDetailPage extends StatelessWidget {
             // Add to Cart Button
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                   Product.add_to_cart(product.name, 1);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -143,12 +145,28 @@ class ProductDetailPage extends StatelessWidget {
 
 
 class FavoriteButton extends StatefulWidget {
+  final String productname;
+  const FavoriteButton({super.key, required this.productname});
+
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = false; // Track selection state
+  bool isFavorite = false; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    checkFavoriteStatus();
+  }
+
+  void checkFavoriteStatus() async {
+    bool favoriteStatus = await Product.isProductInWishlist(widget.productname);
+    setState(() {
+      isFavorite = favoriteStatus; // Update state after async call
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +176,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         color: isFavorite ? Colors.red : Colors.grey, // Change color
       ),
       onPressed: () {
+        if(!isFavorite){
+          Product.add_to_wishlist(widget.productname);
+        }else{
+          Product.removeFromWishlist(widget.productname);
+        }
         setState(() {
           isFavorite = !isFavorite; // Toggle state
         });
@@ -165,8 +188,6 @@ class _FavoriteButtonState extends State<FavoriteButton> {
     );
   }
 }
-
-
 
 // import 'package:flutter/material.dart';
 

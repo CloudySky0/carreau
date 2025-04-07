@@ -1,24 +1,7 @@
-import 'package:diamond_app/template.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'user_service.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Initialize Firebase
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(),
-    );
-  }
-}
+import 'template.dart';
+// import 'signup_page.dart'; // Import the SignupPage
 
 class LoginPage extends StatefulWidget {
   @override
@@ -26,77 +9,97 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   bool isLoading = false;
-  String? message; // Stores login result
 
-  Future<void> _checkNameInFirebase() async {
-  setState(() => isLoading = true);
+  Future<void> login() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  String name = _nameController.text.trim();
-  if (name.isEmpty) {
-    setState(() {
-      message = "Please enter a name.";
-      isLoading = false;
-    });
-    return;
-  }
+    setState(() => isLoading = true);
 
-  try {
-    var query = await FirebaseFirestore.instance
-        .collection('Users')
-        .where('profile.name', isEqualTo: name)
-        .get();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
 
-    if (query.docs.isNotEmpty) {
-      String userId = query.docs.first.id; // Get document ID
+    String? userId = await UserService.loginUser(email, password);
 
-      await UserService.saveUserId(userId); // Store ID in SharedPreferences
-
-      setState(() => message = "✅ Login Successful!");
-
+    if (userId != null) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Template(userId: userId)),
       );
     } else {
-      setState(() => message = "❌ User Not Found.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid email or password")),
+      );
     }
-  } catch (e) {
-    setState(() => message = "⚠️ Error: $e");
-  } finally {
+
     setState(() => isLoading = false);
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login Page")),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      backgroundColor: Colors.black,
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: "Enter your name"),
+              Text("Login", style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold)),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  labelStyle: TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.email, color: Colors.white),
+                ),
+                style: TextStyle(color: Colors.white),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) => value!.isEmpty ? "Enter your email" : null,
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 15),
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  labelStyle: TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock, color: Colors.white),
+                ),
+                style: TextStyle(color: Colors.white),
+                validator: (value) => value!.length < 6 ? "Password must be at least 6 characters" : null,
+              ),
+              SizedBox(height: 20),
               isLoading
                   ? CircularProgressIndicator()
                   : ElevatedButton(
-                      onPressed: _checkNameInFirebase,
+                      onPressed: login,
                       child: Text("Login"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        foregroundColor: Colors.black,
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 50),
+                      ),
                     ),
               SizedBox(height: 10),
-              if (message != null)
-                Text(
-                  message!,
-                  style: TextStyle(fontSize: 16, color: Colors.blue),
-                ),
+              TextButton(
+                onPressed: () {
+                  print("signing");
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => SignupPage()), // Navigate to SignupPage
+                  // );
+                },
+                child: Text("Don't have an account? Sign Up", style: TextStyle(color: Colors.orange)),
+              ),
             ],
           ),
         ),
